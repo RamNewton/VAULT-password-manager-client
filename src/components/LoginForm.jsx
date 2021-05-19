@@ -1,9 +1,93 @@
 import React from 'react';
+import axios from "axios";
+import { useState, useContext } from 'react';
+import { useHistory } from 'react-router';
+import { withRouter } from "react-router-dom";
+import { SessionContext } from '../context/SessionContext';
+// import { useForm } from "react-hook-form";
 
-const LoginForm = () => {
+const LoginForm = (props) => {
+
+    const showAuthNotification = props.showAuthNotification
+    const context = useContext(SessionContext)
+    const [formData, setFormData] = useState({ "email": null, "password": null });
+    const [errorMessage, setErrorMessage] = useState(null)
+    const [loading, setLoading] = useState(false)
+
+    let history = useHistory();
+    const formSubmit = () => {
+        setLoading(true);
+        setErrorMessage(null);
+        console.log("Post request fired")
+        axios.post("http://localhost:5000/api/auth/", formData, { withCredentials: true })
+            .then(res => {
+                console.log(res);
+                context.setLoggedIn(true);
+                setLoading(false);
+                history.replace("/dashboard");
+            })
+            .catch(err => {
+                if (err.response)
+                    setErrorMessage(err.response.data);
+                setLoading(false);
+            });
+    }
+
+    const renderNotification = () => {
+        if (errorMessage) {
+            return (
+                <div className="notification is-danger is-light">
+                    <button className="delete" onClick={() => setErrorMessage(null)}></button>
+                    {errorMessage}
+                </div>
+            )
+        }
+    }
+
+    const renderAuthNotification = () => {
+        if (showAuthNotification) {
+            return (
+                <div className="notification is-warning is-light is-text-center has-text-centered">
+                    You need to be logged in to view that page.
+                </div>
+            )
+        }
+    }
+
     return (
-            <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum quos soluta itaque sint dignissimos magni quae aliquam inventore dolores labore nobis eligendi ex voluptatem quas iste optio perspiciatis, iure voluptatibus?</div>
+        <div className="columns is-centered mt-5">
+            <div className="column is-8">
+                {renderNotification()}
+                {renderAuthNotification()}
+                <div className="field">
+                    <p className="control has-icons-left has-icons-right">
+                        <input className="input" type="email" placeholder="Email" onChange={(event) => { setFormData({ ...formData, "email": event.target.value }) }} />
+                        <span className="icon is-small is-left">
+                            <i className="fas fa-envelope"></i>
+                        </span>
+                        <span className="icon is-small is-right">
+                            <i className="fas fa-check"></i>
+                        </span>
+                    </p>
+                </div>
+                <div className="field">
+                    <p className="control has-icons-left">
+                        <input className="input" type="password" placeholder="Password" onChange={(event) => { setFormData({ ...formData, "password": event.target.value }) }} />
+                        <span className="icon is-small is-left">
+                            <i className="fas fa-lock"></i>
+                        </span>
+                    </p>
+                </div>
+                <div className="mt-5 field is-flex is-justify-content-center">
+                    <p className="control">
+                        <button className={`button is-medium ${loading ? 'is-loading' : null} is-success`} onClick={() => formSubmit()}>
+                            Login
+                        </button>
+                    </p>
+                </div>
+            </div>
+        </div>
     )
 }
 
-export default LoginForm;
+export default withRouter(LoginForm);
