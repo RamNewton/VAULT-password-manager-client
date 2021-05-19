@@ -4,18 +4,28 @@ import { useState, useContext } from 'react';
 import { useHistory } from 'react-router';
 import { withRouter } from "react-router-dom";
 import { SessionContext } from '../context/SessionContext';
-// import { useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+
+
 
 const LoginForm = (props) => {
 
     const showAuthNotification = props.showAuthNotification
     const context = useContext(SessionContext)
-    const [formData, setFormData] = useState({ "email": null, "password": null });
     const [errorMessage, setErrorMessage] = useState(null)
     const [loading, setLoading] = useState(false)
 
+    const {
+        register,
+        trigger,
+        formState: { errors }
+    } = useForm({
+        'mode': 'onTouched',
+        'defaultValues': { email: "", password: "" }
+    });
+
     let history = useHistory();
-    const formSubmit = () => {
+    const formSubmit = (formData) => {
         setLoading(true);
         setErrorMessage(null);
         console.log("Post request fired")
@@ -54,25 +64,48 @@ const LoginForm = (props) => {
         }
     }
 
+    const emailErrorNotify = (errors) => {
+        let message = null;
+
+        if (errors?.email?.type === 'required') message = "This field is required";
+        else if (errors?.email?.type === 'pattern') message = "Please enter a valid email id";
+
+        return message ? <p className="tag is-warning is-light mb-1">{message}</p> : null;
+    }
+
+    const passwordErrorNotify = (errors) => {
+        let message = null;
+
+        if (errors?.password?.type === 'required') message = "This field is required";
+
+        return message ? <p className="tag is-warning is-light mb-1">{message}</p> : null;
+    }
+
     return (
         <div className="columns is-centered mt-5">
             <div className="column is-8">
                 {renderNotification()}
                 {renderAuthNotification()}
+                {/* <form onSubmit={handleSubmit(formSubmit)}> */}
                 <div className="field">
+                    {emailErrorNotify(errors)}
                     <p className="control has-icons-left has-icons-right">
-                        <input className="input" type="email" placeholder="Email" onChange={(event) => { setFormData({ ...formData, "email": event.target.value }) }} />
+                        <input className="input" type="email" placeholder="Email" {...register("email", {
+                            required: true,
+                            pattern: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i
+                        })} />
                         <span className="icon is-small is-left">
                             <i className="fas fa-envelope"></i>
-                        </span>
-                        <span className="icon is-small is-right">
-                            <i className="fas fa-check"></i>
                         </span>
                     </p>
                 </div>
                 <div className="field">
+                    {passwordErrorNotify(errors)}
                     <p className="control has-icons-left">
-                        <input className="input" type="password" placeholder="Password" onChange={(event) => { setFormData({ ...formData, "password": event.target.value }) }} />
+                        <input className="input" type="password" placeholder="Password"
+                            {...register("password", {
+                                required: true,
+                            })} />
                         <span className="icon is-small is-left">
                             <i className="fas fa-lock"></i>
                         </span>
@@ -80,13 +113,20 @@ const LoginForm = (props) => {
                 </div>
                 <div className="mt-5 field is-flex is-justify-content-center">
                     <p className="control">
-                        <button className={`button is-medium ${loading ? 'is-loading' : null} is-success`} onClick={() => formSubmit()}>
+                        <button className={`button is-medium ${loading ? 'is-loading' : null} is-success`}
+                            onClick={async () => {
+                                const valid = await trigger();
+                                if (valid)
+                                    formSubmit();
+                            }
+                            }>
                             Login
-                        </button>
+                            </button>
                     </p>
                 </div>
-            </div>
-        </div>
+                {/* </form> */}
+            </div >
+        </div >
     )
 }
 
