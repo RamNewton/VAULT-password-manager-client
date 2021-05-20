@@ -10,7 +10,8 @@ import { useForm } from "react-hook-form";
 
 const LoginForm = (props) => {
 
-    const showAuthNotification = props.showAuthNotification
+    const notificationMessage = props.notificationMessage
+    const notificationType = props.notificationType
     const context = useContext(SessionContext)
     const [errorMessage, setErrorMessage] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -18,6 +19,7 @@ const LoginForm = (props) => {
     const {
         register,
         trigger,
+        getValues,
         formState: { errors }
     } = useForm({
         'mode': 'onTouched',
@@ -55,9 +57,9 @@ const LoginForm = (props) => {
     }
 
     const renderAuthNotification = () => {
-        if (showAuthNotification) {
+        if (notificationMessage) {
             return (
-                <div className="notification is-warning is-light is-text-center has-text-centered">
+                <div className={`notification is-${notificationType} is-light is-text-center has-text-centered`}>
                     You need to be logged in to view that page.
                 </div>
             )
@@ -117,7 +119,7 @@ const LoginForm = (props) => {
                             onClick={async () => {
                                 const valid = await trigger();
                                 if (valid)
-                                    formSubmit();
+                                    formSubmit(getValues());
                             }
                             }>
                             Login

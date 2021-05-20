@@ -15,7 +15,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
                     return <Redirect to={
                         {
                             pathname: '/auth',
-                            props: { isLoginPage: true, showAuthNotification: true },
+                            props: { isLoginPage: true, message: "You need to log in to view that page", type: "warning" },
                             state: {
                                 from: props.location
                             }

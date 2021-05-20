@@ -6,7 +6,6 @@ import { useHistory } from 'react-router';
 
 const RegistrationForm = () => {
 
-    const [formData, setFormData] = useState({ "email": null, "password": null, "name": null });
     const [errorMessage, setErrorMessage] = useState(null)
     const [loading, setLoading] = useState(false)
     const history = useHistory()
@@ -21,7 +20,7 @@ const RegistrationForm = () => {
         'defaultValues': { name: "", email: "", password: "", repeat_password: "" }
     });
 
-    const formSubmit = () => {
+    const formSubmit = (formData) => {
         setLoading(true);
         setErrorMessage(null);
         console.log("Post request fired")
@@ -29,11 +28,12 @@ const RegistrationForm = () => {
             .then(res => {
                 console.log(res);
                 setLoading(false);
-                history.replace({ pathname: "/auth", props: { isLoginPage: true } })
+                history.replace({ pathname: "/auth", props: { isLoginPage: true, message: "Registered Successfully", type: "success" }, })
             })
             .catch(err => {
                 if (err.response)
                     setErrorMessage(err.response.data);
+                history.replace({ pathname: "/auth", props: { isLoginPage: false, message: "Error occured during registration", type: "danger" }, })
                 setLoading(false);
             });
     }
@@ -161,7 +161,7 @@ const RegistrationForm = () => {
                             onClick={async () => {
                                 const valid = await trigger();
                                 if (valid)
-                                    formSubmit();
+                                    formSubmit(getValues());
                             }
                             }>
                             Register
