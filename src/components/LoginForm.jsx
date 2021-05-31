@@ -5,6 +5,7 @@ import { useHistory } from 'react-router';
 import { withRouter } from "react-router-dom";
 import { SessionContext } from '../context/SessionContext';
 import { useForm } from "react-hook-form";
+import { apiAuth } from './../services/api/utilities/auth';
 
 
 
@@ -31,18 +32,19 @@ const LoginForm = (props) => {
         setLoading(true);
         setErrorMessage(null);
         console.log("Post request fired")
-        axios.post("http://localhost:5000/api/auth/", formData, { withCredentials: true })
+        apiAuth.login(formData)
             .then(res => {
-                console.log(res);
                 context.setLoggedIn(true);
-                setLoading(false);
                 history.replace("/dashboard");
             })
             .catch(err => {
                 if (err.response)
                     setErrorMessage(err.response.data);
                 setLoading(false);
-            });
+            })
+            .finally(() =>
+                setLoading(false)
+            );
     }
 
     const renderNotification = () => {

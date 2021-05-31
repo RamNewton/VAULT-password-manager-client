@@ -4,6 +4,7 @@ import { useHistory } from 'react-router';
 import { SessionContext } from "../context/SessionContext";
 import { set, useForm } from "react-hook-form";
 import axios from 'axios';
+import { apiMain } from './../services/api/utilities/main';
 
 const Form = ({ register, errors }) => {
 
@@ -87,20 +88,20 @@ const AddModal = (props) => {
     const formSubmit = (formData) => {
         console.log("Post request fired")
         setLoading(true);
-        axios.post("http://localhost:5000/api/main/create", formData, { withCredentials: true })
+        apiMain.createResource(formData)
             .then(res => {
-                console.log(res);
-                setLoading(false);
                 getItems();
                 toggle();
                 reset();
             })
             .catch(err => {
-                if (err.response)
-                    console.error(err.response.data)
+                // if (err.response)
+                //     console.error(err.response.data)
+            })
+            .finally(() => {
                 setLoading(false);
-                // setErrorMessage(err.response.data);
-            });
+            })
+            ;
     }
 
     if (visible) {
@@ -189,19 +190,20 @@ const UpdateModal = (props) => {
     const formSubmit = (formData) => {
         setLoading(true);
         console.log("Post request fired")
-        axios.put(`http://localhost:5000/api/main/update/${id}`, formData, { withCredentials: true })
+        apiMain.updateResource(id, formData)
             .then(res => {
-                console.log(res);
-                setLoading(false);
                 getItems();
                 toggle();
             })
             .catch(err => {
                 if (err.response)
                     console.error(err.response.data)
-                setLoading(false);
                 // setErrorMessage(err.response.data);
-            });
+            })
+            .finally(() => {
+                setLoading(false);
+            })
+            ;
     }
 
     if (visible) {
@@ -236,11 +238,8 @@ const UpdateModal = (props) => {
 
 const DeleteModal = ({ visible, toggle, getItems, id }) => {
     const onConfirmation = () => {
-        console.log("Delete request fired", id)
-        console.log()
-        axios.delete(`http://localhost:5000/api/main/delete/${id}`, { withCredentials: true })
+        apiMain.deleteResource(id)
             .then(res => {
-                console.log(res);
                 getItems();
                 toggle();
             })
@@ -346,10 +345,9 @@ const Dashboard = (props) => {
     const [items, setItems] = useState([]);
 
     const getItems = () => {
-        axios.get("http://localhost:5000/api/main/", { withCredentials: true })
+        apiMain.getAll()
             .then(res => {
-                console.log(res);
-                setItems(res.data);
+                setItems(res);
             })
             .catch(err => {
                 console.log(err.response.data)

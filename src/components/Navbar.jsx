@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 import { SessionContext } from '../context/SessionContext'
 import axios from 'axios';
 import { useHistory } from 'react-router';
+import { apiAuth } from './../services/api/utilities/auth';
 
 const Navbar = () => {
 
@@ -11,7 +12,7 @@ const Navbar = () => {
 
     const logout = () => {
         console.log("Logout request fired");
-        axios.post("http://localhost:5000/api/auth/logout", null, { withCredentials: true })
+        apiAuth.logout()
             .then(res => {
                 console.log(res);
                 session.setLoggedIn(false)
