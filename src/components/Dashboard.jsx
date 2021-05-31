@@ -2,26 +2,65 @@ import React from 'react';
 import { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router';
 import { SessionContext } from "../context/SessionContext";
+import { set, useForm } from "react-hook-form";
 import axios from 'axios';
 
-const Form = ({ formData, setFormData }) => {
+const Form = ({ register, errors }) => {
+
+    const accountNameErrorNotify = (errors) => {
+        let message = null;
+
+        if (errors?.accountName?.type === 'required') message = "This field is required";
+        else if (errors?.accountName?.type === 'pattern') message = "Can contain only alphanumeric, underscore and space";
+
+        return message ? <p className="tag is-warning is-light mb-1">{message}</p> : null;
+    }
+
+    const usernameErrorNotify = (errors) => {
+        let message = null;
+
+        if (errors?.username?.type === 'required') message = "This field is required";
+
+        return message ? <p className="tag is-warning is-light mb-1">{message}</p> : null;
+    }
+
+    const passwordErrorNotify = (errors) => {
+        let message = null;
+
+        if (errors?.password?.type === 'required') message = "This field is required";
+
+        return message ? <p className="tag is-warning is-light mb-1">{message}</p> : null;
+    }
 
     return (
         <div className="columns is-centered">
             <div className="column is-8">
                 <div className="field">
+                    {accountNameErrorNotify(errors)}
                     <p className="control">
-                        <input className="input" type="text" placeholder="Account name" value={formData.account_name} onChange={(event) => { setFormData({ ...formData, "account_name": event.target.value }) }} />
+                        <input className="input" type="text" placeholder="Account name"
+                            {...register("accountName", {
+                                required: true,
+                                pattern: /^[A-Za-z_0-9 ]*$/i
+                            })} />
                     </p>
                 </div>
                 <div className="field">
+                    {usernameErrorNotify(errors)}
                     <p className="control">
-                        <input className="input" type="text" placeholder="Username" value={formData.username} onChange={(event) => { setFormData({ ...formData, "username": event.target.value }) }} />
+                        <input className="input" type="text" placeholder="Username"
+                            {...register("username", {
+                                required: true
+                            })} />
                     </p>
                 </div>
                 <div className="field">
+                    {passwordErrorNotify(errors)}
                     <p className="control">
-                        <input className="input" type="password" placeholder="Password" value={formData.password} onChange={(event) => { setFormData({ ...formData, "password": event.target.value }) }} />
+                        <input className="input" type="password" placeholder="Password"
+                            {...register("password", {
+                                required: true
+                            })} />
                     </p>
                 </div>
             </div>
@@ -31,21 +70,35 @@ const Form = ({ formData, setFormData }) => {
 
 const AddModal = (props) => {
     const { visible, toggle, getItems } = props;
-    const [formData, setFormData] = useState({ "account_name": "", "username": "", "password": "" });
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null)
 
-    const resetData = () => setFormData({ "account_name": "", "username": "", "password": "" });
-    const formSubmit = () => {
+    const {
+        register,
+        trigger,
+        reset,
+        getValues,
+        formState: { errors }
+    } = useForm({
+        'mode': 'onTouched',
+        'defaultValues': { accountName: "", username: "", password: "" }
+    });
+
+    const formSubmit = (formData) => {
         console.log("Post request fired")
+        setLoading(true);
         axios.post("http://localhost:5000/api/main/create", formData, { withCredentials: true })
             .then(res => {
                 console.log(res);
+                setLoading(false);
                 getItems();
                 toggle();
-                setFormData({ "account_name": "", "username": "", "password": "" });
+                reset();
             })
             .catch(err => {
                 if (err.response)
                     console.error(err.response.data)
+                setLoading(false);
                 // setErrorMessage(err.response.data);
             });
     }
@@ -57,14 +110,20 @@ const AddModal = (props) => {
                 <div className="modal-card">
                     <header className="modal-card-head">
                         <p className="modal-card-title">New Entry</p>
-                        <button className="delete" onClick={toggle} aria-label="close"></button>
                     </header>
                     <section className="modal-card-body">
-                        <Form setFormData={setFormData} formData={formData}></Form>
+                        <Form register={register} errors={errors}></Form>
                     </section>
                     <footer className="modal-card-foot is-flex is-justify-content-center">
-                        <button className="button is-success" onClick={() => formSubmit()}>Add</button>
-                        <button className="button" onClick={() => { toggle(); resetData(); }}>Cancel</button>
+                        <button className={`button is-success ${loading ? 'is-loading' : null}`}
+                            onClick={async () => {
+                                const valid = await trigger();
+                                if (valid)
+                                    formSubmit(getValues());
+                            }}>
+                            Add
+                        </button>
+                        <button className="button" onClick={() => { toggle(); reset(); }}>Cancel</button>
                     </footer>
                 </div>
             </div>
@@ -106,20 +165,41 @@ const AddCard = ({ getItems }) => {
 }
 
 const UpdateModal = (props) => {
-    const { visible, toggle, getItems, id, account_name, username, password } = props;
-    const [formData, setFormData] = useState({ "account_name": account_name, "username": username, "password": password });
+    const { visible, toggle, getItems, id, accountName, username, password } = props;
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null)
 
-    const formSubmit = () => {
+    const {
+        register,
+        trigger,
+        getValues,
+        setValue,
+        formState: { errors }
+    } = useForm({
+        'mode': 'onTouched',
+        'defaultValues': { "accountName": accountName, "username": username, "password": password }
+    });
+
+    useEffect(() => {
+        setValue('accountName', accountName);
+        setValue('username', username);
+        setValue('password', password);
+    }, [visible])
+
+    const formSubmit = (formData) => {
+        setLoading(true);
         console.log("Post request fired")
         axios.put(`http://localhost:5000/api/main/update/${id}`, formData, { withCredentials: true })
             .then(res => {
                 console.log(res);
+                setLoading(false);
                 getItems();
                 toggle();
             })
             .catch(err => {
                 if (err.response)
                     console.error(err.response.data)
+                setLoading(false);
                 // setErrorMessage(err.response.data);
             });
     }
@@ -133,10 +213,17 @@ const UpdateModal = (props) => {
                         <p className="modal-card-title">Update Entry</p>
                     </header>
                     <section className="modal-card-body">
-                        <Form setFormData={setFormData} formData={formData}></Form>
+                        <Form register={register} errors={errors}></Form>
                     </section>
                     <footer className="modal-card-foot is-flex is-justify-content-center">
-                        <button className="button is-success" onClick={() => formSubmit()}>Update</button>
+                        <button className={`button is-success ${loading ? 'is-loading' : null}`}
+                            onClick={async () => {
+                                const valid = await trigger();
+                                if (valid)
+                                    formSubmit(getValues());
+                            }}>
+                            Update
+                        </button>
                         <button className="button" onClick={toggle} >Cancel</button>
                     </footer>
                 </div>
@@ -148,7 +235,6 @@ const UpdateModal = (props) => {
 }
 
 const DeleteModal = ({ visible, toggle, getItems, id }) => {
-    console.log(id)
     const onConfirmation = () => {
         console.log("Delete request fired", id)
         console.log()
@@ -189,7 +275,7 @@ const DeleteModal = ({ visible, toggle, getItems, id }) => {
 }
 
 const Card = (props) => {
-    const { account_name, username, password, getItems, id } = props
+    const { accountName, username, password, getItems, id } = props
     const [isPasswordVisible, setPasswordVisible] = useState(false);
     const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
     const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
@@ -207,14 +293,14 @@ const Card = (props) => {
                 toggle={toggleUpdateModalVisible}
                 getItems={getItems}
                 id={id}
-                account_name={account_name}
+                accountName={accountName}
                 username={username}
                 password={password}
             ></UpdateModal>
             <div className="card">
                 <div className="card-content">
                     <p className="title">
-                        {account_name}
+                        {accountName}
                     </p>
                     <div className="mt-3 subtitle">
                         <div className="field">
@@ -255,8 +341,8 @@ const Card = (props) => {
 
 const Dashboard = (props) => {
 
-    const context = useContext(SessionContext)
-    let history = useHistory();
+    // const context = useContext(SessionContext)
+    // let history = useHistory();
     const [items, setItems] = useState([]);
 
     const getItems = () => {
@@ -281,7 +367,7 @@ const Dashboard = (props) => {
                     items.map((data) => {
                         return (
                             <div className="column is-4">
-                                <Card account_name={data.account_name} username={data.username} password={data.password} id={data.id} getItems={getItems}></Card>
+                                <Card accountName={data.accountName} username={data.username} password={data.password} id={data.id} getItems={getItems}></Card>
                             </div>
                         )
                     })

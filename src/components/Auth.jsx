@@ -5,7 +5,8 @@ import LoginForm from './LoginForm';
 
 const AuthPage = (props) => {
     const isLoginPage = props.location.props ? props.location.props.isLoginPage : true;
-    const showAuthNotification = props.location.props ? props.location.props.showAuthNotification : false;
+    const notificationMessage = props.location.props ? props.location.props.message : null;
+    const notificationType = props.location.props ? props.location.props.type : null;
     const [loginPage, setLoginPage] = useState(isLoginPage);
     return (
         <div className="container is-fluid">
@@ -29,7 +30,7 @@ const AuthPage = (props) => {
                                     </li>
                                 </ul>
                             </div>
-                            {loginPage ? <LoginForm showAuthNotification={showAuthNotification} /> : <RegistrationForm />}
+                            {loginPage ? <LoginForm notificationMessage={notificationMessage} notificationType={notificationType} /> : <RegistrationForm />}
                         </div>
                     </div>
                 </div>
