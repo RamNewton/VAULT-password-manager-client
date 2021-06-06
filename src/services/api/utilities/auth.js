@@ -8,15 +8,20 @@ const logout = () => {
 };
 
 const login = (payload) => {
-    return axios.post(`${BASE_URL}/auth/`, payload).then(handleResponse).catch(handleError);
+    return axios.post(`${BASE_URL}/auth/`, payload, { withCredentials: true }).then(handleResponse).catch(handleError);
 };
 
 const register = (payload) => {
     return axios.post(`${BASE_URL}/auth/register`, payload).then(handleResponse).catch(handleError);
 };
 
+const checkLoginStatus = () => {
+    return axios.get(`${BASE_URL}/auth/login_status`, { withCredentials: true }).then(handleResponse).catch(handleError);
+};
+
 export const apiAuth = {
     login,
     logout,
     register,
+    checkLoginStatus,
 };

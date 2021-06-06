@@ -2,8 +2,7 @@ import { createContext } from "react";
 import { useState } from "react";
 
 const SessionContext = createContext({
-    isLoggedIn: true,
-    toggleLoggedIn: () => { }
+    isLoggedIn: false
 })
 
 

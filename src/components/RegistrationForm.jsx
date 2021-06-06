@@ -25,9 +25,14 @@ const RegistrationForm = () => {
         setLoading(true);
         setErrorMessage(null);
         console.log("Post request fired")
-        apiAuth.register(formData)
+        let unwrap = (({ name, email, password }) => ({ name, email, password }))
+        apiAuth.register(unwrap(formData))
             .then(res => {
-                history.replace({ pathname: "/auth", props: { isLoginPage: true, message: "Registered Successfully", type: "success" }, })
+                history.push('/dummy')
+                history.replace({
+                    pathname: "/auth", props: { isLoginPage: true, message: "Registered Successfully", type: "success" }
+                    ,
+                })
             })
             .catch(err => {
                 if (err.response)
@@ -159,7 +164,7 @@ const RegistrationForm = () => {
                 </div>
                 <div className="field is-flex is-justify-content-center mt-5">
                     <p className="control">
-                        <button className="button is-medium is-success"
+                        <button className={`button is-medium ${loading ? 'is-loading' : null} is-success`}
                             onClick={async () => {
                                 const valid = await trigger();
                                 if (valid)

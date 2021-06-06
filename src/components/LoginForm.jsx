@@ -1,6 +1,5 @@
 import React from 'react';
-import axios from "axios";
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { withRouter } from "react-router-dom";
 import { SessionContext } from '../context/SessionContext';
@@ -8,14 +7,17 @@ import { useForm } from "react-hook-form";
 import { apiAuth } from './../services/api/utilities/auth';
 
 
-
 const LoginForm = (props) => {
 
-    const notificationMessage = props.notificationMessage
-    const notificationType = props.notificationType
+    const { notificationType } = props
     const context = useContext(SessionContext)
     const [errorMessage, setErrorMessage] = useState(null)
+    const [notificationMessage, setNotificationMessage] = useState(props.notificationMessage);
     const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        setNotificationMessage(props.notificationMessage);
+    }, props.notificationMessage);
 
     const {
         register,
@@ -62,7 +64,8 @@ const LoginForm = (props) => {
         if (notificationMessage) {
             return (
                 <div className={`notification is-${notificationType} is-light is-text-center has-text-centered`}>
-                    You need to be logged in to view that page.
+                    <button className="delete" onClick={() => setNotificationMessage(null)}></button>
+                    {notificationMessage}
                 </div>
             )
         }
