@@ -6,11 +6,15 @@ const loaderStyle = {
     "width": "100%", "height": "100%"
 }
 const PageLoadSpinner = (props) => {
-    <div className="is-flex is-justify-content-center" style={loaderStyle}>
-        <div className="is-flex is-align-items-center">
-            <ScaleLoader className="is-flex" color="#00d1b2" height={150} margin={20} width={8} radius={8} />
+
+
+    return (
+        <div className="is-flex is-justify-content-center" style={loaderStyle}>
+            <div className="is-flex is-align-items-center">
+                <ScaleLoader className="is-flex" color="#00d1b2" height={150} margin={20} width={8} radius={8} />
+            </div>
         </div>
-    </div>
+    )
 }
 
 export default PageLoadSpinner;
