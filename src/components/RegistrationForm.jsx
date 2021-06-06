@@ -3,6 +3,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useForm } from "react-hook-form";
 import { useHistory } from 'react-router';
+import { apiAuth } from './../services/api/utilities/auth';
 
 const RegistrationForm = () => {
 
@@ -24,18 +25,19 @@ const RegistrationForm = () => {
         setLoading(true);
         setErrorMessage(null);
         console.log("Post request fired")
-        axios.post("http://localhost:5000/api/auth/register", formData)
+        apiAuth.register(formData)
             .then(res => {
-                console.log(res);
-                setLoading(false);
                 history.replace({ pathname: "/auth", props: { isLoginPage: true, message: "Registered Successfully", type: "success" }, })
             })
             .catch(err => {
                 if (err.response)
                     setErrorMessage(err.response.data);
                 history.replace({ pathname: "/auth", props: { isLoginPage: false, message: "Error occured during registration", type: "danger" }, })
+            })
+            .finally(() => {
                 setLoading(false);
-            });
+            })
+            ;
     }
 
     const emailErrorNotify = (errors) => {
