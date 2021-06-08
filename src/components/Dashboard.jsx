@@ -1,9 +1,6 @@
 import React from 'react';
-import { useState, useEffect, useContext } from 'react';
-import { useHistory } from 'react-router';
-import { SessionContext } from "../context/SessionContext";
-import { set, useForm } from "react-hook-form";
-import axios from 'axios';
+import { useState, useEffect } from 'react';
+import { useForm } from "react-hook-form";
 import { apiMain } from './../services/api/utilities/main';
 
 const Form = ({ register, errors }) => {
@@ -338,12 +335,9 @@ const Card = (props) => {
     )
 }
 
-const Dashboard = (props) => {
+const Dashboard = () => {
 
-    // const context = useContext(SessionContext)
-    // let history = useHistory();
     const [items, setItems] = useState([]);
-
     const getItems = () => {
         apiMain.getAll()
             .then(res => {

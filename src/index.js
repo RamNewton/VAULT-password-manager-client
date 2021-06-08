@@ -1,22 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import AuthPage from "./components/Auth.jsx";
-import Dashboard from "./components/Dashboard.jsx";
-import Navbar from "./components/Navbar";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
 import { SessionContextProvider } from "./context/SessionContext";
-import ProtectedRoute from "./components/ProtectedRoute";
 
 ReactDOM.render(
     <React.StrictMode>
         <BrowserRouter>
             <SessionContextProvider>
-                <Navbar></Navbar>
-                <Switch>
-                    <Route exact path="/auth" component={AuthPage}></Route>
-                    <ProtectedRoute exact path="/dashboard" component={Dashboard}></ProtectedRoute>
-                </Switch>
+                <App />
             </SessionContextProvider>
         </BrowserRouter>
     </React.StrictMode>,
