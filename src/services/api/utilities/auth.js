@@ -8,7 +8,7 @@ const logout = () => {
 };
 
 const login = (payload) => {
-    return axios.post(`${BASE_URL}/auth/`, payload, { withCredentials: true }).then(handleResponse).catch(handleError);
+    return axios.post(`${BASE_URL}/auth/login`, payload, { withCredentials: true }).then(handleResponse).catch(handleError);
 };
 
 const register = (payload) => {

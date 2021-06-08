@@ -335,12 +335,9 @@ const Card = (props) => {
     )
 }
 
-const Dashboard = (props) => {
+const Dashboard = () => {
 
-    // const context = useContext(SessionContext)
-    // let history = useHistory();
     const [items, setItems] = useState([]);
-
     const getItems = () => {
         apiMain.getAll()
             .then(res => {
