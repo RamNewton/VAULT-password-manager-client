@@ -1,7 +1,24 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useForm } from "react-hook-form";
+import { useHistory } from 'react-router';
 import { apiMain } from './../services/api/utilities/main';
+import { SessionContext } from '../context/SessionContext';
+
+const generateErrorMessage = (error) => {
+    if (error.response.status === 401) {
+        const errorMessage = error.response.data.message;
+        var message = null;
+        if (errorMessage === "Expired Token" || errorMessage === "No Token") {
+            message = "Session expired. Please log in again."
+        }
+        else if (errorMessage === "Invalid Token") {
+            message = "Error occured. Please log in again to continue."
+        }
+        return message;
+    }
+    return null;
+}
 
 const Form = ({ register, errors }) => {
 
@@ -67,6 +84,8 @@ const Form = ({ register, errors }) => {
 }
 
 const AddModal = (props) => {
+    const history = useHistory();
+    const context = useContext(SessionContext);
     const { visible, toggle, getItems } = props;
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null)
@@ -91,9 +110,14 @@ const AddModal = (props) => {
                 toggle();
                 reset();
             })
-            .catch(err => {
-                // if (err.response)
-                //     console.error(err.response.data)
+            .catch(error => {
+                const message = generateErrorMessage(error);
+                if (message) {
+                    context.setLoggedIn(false);
+                    history.replace({
+                        pathname: "/auth", props: { isLoginPage: true, message: message, type: "warning" }
+                    })
+                }
             })
             .finally(() => {
                 setLoading(false);
@@ -163,6 +187,8 @@ const AddCard = ({ getItems }) => {
 }
 
 const UpdateModal = (props) => {
+    const history = useHistory();
+    const context = useContext(SessionContext);
     const { visible, toggle, getItems, id, accountName, username, password } = props;
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null)
@@ -192,10 +218,14 @@ const UpdateModal = (props) => {
                 getItems();
                 toggle();
             })
-            .catch(err => {
-                if (err.response)
-                    console.error(err.response.data)
-                // setErrorMessage(err.response.data);
+            .catch(error => {
+                const message = generateErrorMessage(error);
+                if (message) {
+                    context.setLoggedIn(false);
+                    history.replace({
+                        pathname: "/auth", props: { isLoginPage: true, message: message, type: "warning" }
+                    })
+                }
             })
             .finally(() => {
                 setLoading(false);
@@ -234,16 +264,22 @@ const UpdateModal = (props) => {
 }
 
 const DeleteModal = ({ visible, toggle, getItems, id }) => {
+    const history = useHistory();
+    const context = useContext(SessionContext)
     const onConfirmation = () => {
         apiMain.deleteResource(id)
             .then(res => {
                 getItems();
                 toggle();
             })
-            .catch(err => {
-                if (err.response)
-                    console.error(err.response.data)
-                // setErrorMessage(err.response.data);
+            .catch(error => {
+                const message = generateErrorMessage(error);
+                if (message) {
+                    context.setLoggedIn(false);
+                    history.replace({
+                        pathname: "/auth", props: { isLoginPage: true, message: message, type: "warning" }
+                    })
+                }
             });
     }
 
@@ -336,15 +372,22 @@ const Card = (props) => {
 }
 
 const Dashboard = () => {
-
+    const history = useHistory();
+    const context = useContext(SessionContext);
     const [items, setItems] = useState([]);
     const getItems = () => {
         apiMain.getAll()
             .then(res => {
                 setItems(res);
             })
-            .catch(err => {
-                console.log(err.response.data)
+            .catch(error => {
+                const message = generateErrorMessage(error);
+                if (message) {
+                    context.setLoggedIn(false);
+                    history.replace({
+                        pathname: "/auth", props: { isLoginPage: true, message: message, type: "warning" }
+                    })
+                }
             })
     }
 

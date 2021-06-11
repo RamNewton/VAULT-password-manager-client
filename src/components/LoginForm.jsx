@@ -17,7 +17,7 @@ const LoginForm = (props) => {
 
     useEffect(() => {
         setNotificationMessage(props.notificationMessage);
-    }, props.notificationMessage);
+    }, [props.notificationMessage]);
 
     const {
         register,

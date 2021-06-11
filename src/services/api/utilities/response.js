@@ -12,6 +12,5 @@ export function handleResponse(response) {
 }
 
 export function handleError(error) {
-    console.log(error);
     return Promise.reject(error);
 }
