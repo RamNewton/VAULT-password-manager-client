@@ -1,5 +1,5 @@
 import { NavLink, Link, Redirect } from 'react-router-dom';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { SessionContext } from '../context/SessionContext'
 import axios from 'axios';
 import { useHistory } from 'react-router';
@@ -11,6 +11,10 @@ const Navbar = () => {
     const session = useContext(SessionContext);
     const history = useHistory();
     const location = useLocation();
+
+    const [hamburgerOpen, setHamburgerOpen] = useState(false);
+    const toggleHamburger = () => { setHamburgerOpen((prevState) => { return !prevState }) }
+
     const logout = () => {
         console.log("Logout request fired");
         apiAuth.logout()
@@ -45,14 +49,20 @@ const Navbar = () => {
                 <NavLink exact to={"/"} className="navbar-item" activeClassName="has-text-link has-background-info-light">
                     VAULT
                 </NavLink>
-                <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                <a role="button"
+                    className={`navbar-burger ${hamburgerOpen ? 'is-active' : null}`}
+                    aria-label="menu"
+                    aria-expanded="false"
+                    data-target="navbarBasicExample"
+                    onClick={toggleHamburger}
+                >
                     <span aria-hidden="true"></span>
                     <span aria-hidden="true"></span>
                     <span aria-hidden="true"></span>
                 </a>
             </div>
 
-            <div id="navbarBasicExample" className="navbar-menu">
+            <div id="navbarBasicExample" className={`navbar-menu ${hamburgerOpen ? 'is-active' : null}`}>
                 <div className="navbar-start">
                     <NavLink to={"/dashboard"} className="navbar-item" activeClassName="has-text-link has-background-info-light">Dashboard</NavLink>
                 </div>
