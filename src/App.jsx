@@ -50,6 +50,7 @@ const App = () => {
                     <UnprotectedRoute exact path="/auth" component={AuthPage}></UnprotectedRoute>
                     <ProtectedRoute exact path="/dashboard" component={Dashboard}></ProtectedRoute>
                     <Route exact path="/" component={LandingPage}></Route>
+                    <Route path='*' component={LandingPage}></Route>
                 </Switch>
             </React.Fragment >
     )
