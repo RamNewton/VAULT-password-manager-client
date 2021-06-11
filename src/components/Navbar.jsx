@@ -25,7 +25,7 @@ const Navbar = () => {
         if (session.isLoggedIn) {
             return (
                 <div className="button is-danger" onClick={() => logout()}>
-                    Logout <span className="ml-1"><i class="fas fa-sign-out-alt"></i></span>
+                    Logout <span className="ml-1"><i className="fas fa-sign-out-alt"></i></span>
                 </div>
             );
         }

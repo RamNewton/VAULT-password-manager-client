@@ -16,9 +16,9 @@ const subtitleStyle = {
 
 const LandingPage = () => {
     return (
-        <section class="hero is-fullheight-with-navbar is-primary">
-            <div style={heroStyle} class="hero-body">
-                <div class="container has-text-centered">
+        <section className="hero is-fullheight-with-navbar is-primary">
+            <div style={heroStyle} className="hero-body">
+                <div className="container has-text-centered">
                     <span style={titleStyle}>VAULT</span><br />
                     <span style={subtitleStyle}>The Only Password Manager You Need</span>
                 </div>
