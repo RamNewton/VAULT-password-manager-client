@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { SessionContext } from './context/SessionContext'
 import { Route, Switch } from "react-router-dom";
+import LandingPage from './components/LandingPage';
 import AuthPage from "./components/Auth.jsx";
 import Dashboard from "./components/Dashboard.jsx";
 import Navbar from "./components/Navbar";
@@ -8,6 +9,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import UnprotectedRoute from './components/UnprotectedRoute';
 import { apiAuth } from './services/api/utilities/auth';
 import PageLoadSpinner from './components/PageLoadSpinner';
+
 
 
 
@@ -47,6 +49,7 @@ const App = () => {
                 <Switch>
                     <UnprotectedRoute exact path="/auth" component={AuthPage}></UnprotectedRoute>
                     <ProtectedRoute exact path="/dashboard" component={Dashboard}></ProtectedRoute>
+                    <Route exact path="/" component={LandingPage}></Route>
                 </Switch>
             </React.Fragment >
     )

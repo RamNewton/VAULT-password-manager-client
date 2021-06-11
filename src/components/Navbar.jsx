@@ -4,12 +4,13 @@ import { SessionContext } from '../context/SessionContext'
 import axios from 'axios';
 import { useHistory } from 'react-router';
 import { apiAuth } from './../services/api/utilities/auth';
+import { useLocation } from 'react-router-dom'
 
 const Navbar = () => {
 
-    const session = useContext(SessionContext)
-    const history = useHistory()
-
+    const session = useContext(SessionContext);
+    const history = useHistory();
+    const location = useLocation();
     const logout = () => {
         console.log("Logout request fired");
         apiAuth.logout()
@@ -28,7 +29,7 @@ const Navbar = () => {
                 </div>
             );
         }
-        else {
+        else if (location.pathname !== '/auth') {
             return (
                 <React.Fragment>
                     <Link to={{ pathname: "/auth", props: { isLoginPage: false } }} className="button is-primary">Sign Up</Link>
@@ -39,11 +40,11 @@ const Navbar = () => {
     }
 
     return (
-        <nav className="navbar mb-5 is-light" role="navigation" aria-label="main navigation">
+        <nav className="navbar is-light" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
-                <a className="navbar-item" href="https://bulma.io">
-                    Password Manager
-                </a>
+                <NavLink exact to={"/"} className="navbar-item" activeClassName="has-text-link has-background-info-light">
+                    VAULT
+                </NavLink>
                 <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
                     <span aria-hidden="true"></span>
                     <span aria-hidden="true"></span>
@@ -54,9 +55,6 @@ const Navbar = () => {
             <div id="navbarBasicExample" className="navbar-menu">
                 <div className="navbar-start">
                     <NavLink to={"/dashboard"} className="navbar-item" activeClassName="has-text-link has-background-info-light">Dashboard</NavLink>
-                    <a className="navbar-item">
-                        About
-                    </a>
                 </div>
 
                 <div className="navbar-end">

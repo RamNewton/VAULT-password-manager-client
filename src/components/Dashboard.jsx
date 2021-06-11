@@ -396,7 +396,7 @@ const Dashboard = () => {
     }, [])
 
     return (
-        <div className="container is-fluid">
+        <div className="container is-fluid mt-5">
             <div className="columns is-multiline">
                 {
                     items.map((data) => {
