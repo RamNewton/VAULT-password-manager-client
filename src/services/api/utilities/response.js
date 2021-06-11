@@ -4,7 +4,6 @@ export function handleResponse(response) {
     }
 
     if (response.data) {
-        console.log(response);
         return response.data;
     }
 

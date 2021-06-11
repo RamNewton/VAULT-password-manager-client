@@ -1,7 +1,6 @@
-import { NavLink, Link, Redirect } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import React, { useContext, useState } from 'react';
 import { SessionContext } from '../context/SessionContext'
-import axios from 'axios';
 import { useHistory } from 'react-router';
 import { apiAuth } from './../services/api/utilities/auth';
 import { useLocation } from 'react-router-dom'

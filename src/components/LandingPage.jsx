@@ -2,16 +2,16 @@ import React from 'react';
 
 const heroStyle = {
     "height": "100%",
-    "overflow-x": "hidden",
-    "overflow-y": "auto"
+    "overflowX": "hidden",
+    "overflowY": "auto"
 }
 const titleStyle = {
-    "font-family": 'Vollkorn, serif',
-    "font-size": '7em'
+    "fontFamily": 'Vollkorn, serif',
+    "fontSize": '7em'
 }
 const subtitleStyle = {
-    "font-family": 'Vollkorn, serif',
-    "font-size": '1.5em'
+    "fontFamily": 'Vollkorn, serif',
+    "fontSize": '1.5em'
 }
 
 const LandingPage = () => {

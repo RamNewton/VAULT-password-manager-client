@@ -12,7 +12,6 @@ import PageLoadSpinner from './components/PageLoadSpinner';
 
 
 
-
 const App = () => {
 
     const session = useContext(SessionContext);
