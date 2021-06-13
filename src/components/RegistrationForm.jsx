@@ -1,6 +1,5 @@
 import React from 'react';
 import { useState } from 'react';
-import axios from 'axios';
 import { useForm } from "react-hook-form";
 import { useHistory } from 'react-router';
 import { apiAuth } from './../services/api/utilities/auth';
@@ -93,17 +92,6 @@ const RegistrationForm = () => {
         }
     }
 
-    const requiredIcon = () => {
-        return (
-            <span className="icon" style={{
-                fontSize: '8px',
-                color: 'crimson'
-            }}>
-                <i className="fas fa-asterisk"></i>
-            </span >
-        )
-    }
-
     return (
         <div className="columns is-centered mt-5">
             <div className="column is-8">
@@ -141,7 +129,7 @@ const RegistrationForm = () => {
                         <input className="input" type="password" placeholder="Password" {...register("password", {
                             required: true,
                             minLength: 6,
-                            pattern: /^(?=.*[0-9])([A-Za-z0-9!@#$%^&*().,<>_])+$/
+                            pattern: /^(?=.*[0-9])([A-Za-z0-9!@#$%^&*().,<>_])+$/,
                         })} />
                         <span className="icon is-small is-left">
                             <i className="fas fa-lock"></i>
