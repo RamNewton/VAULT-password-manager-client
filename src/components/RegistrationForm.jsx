@@ -68,7 +68,6 @@ const RegistrationForm = () => {
 
         if (errors?.password?.type === 'required') message = "This field is required";
         else if (errors?.password?.type === 'minLength') message = "Password should be minimum 6 characters long";
-        else if (errors?.password?.type === 'maxLength') message = "Password should be maximum 18 characters long";
         else if (errors?.password?.type === 'pattern') message = "Password should contain atleast one number.";
 
         return message ? <p className="tag is-warning is-light mb-1">{message}</p> : null;
@@ -142,7 +141,6 @@ const RegistrationForm = () => {
                         <input className="input" type="password" placeholder="Password" {...register("password", {
                             required: true,
                             minLength: 6,
-                            maxLength: 18,
                             pattern: /^(?=.*[0-9])([A-Za-z0-9!@#$%^&*().,<>_])+$/
                         })} />
                         <span className="icon is-small is-left">
