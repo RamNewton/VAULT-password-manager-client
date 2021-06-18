@@ -16,7 +16,7 @@ const register = (payload) => {
 };
 
 const checkLoginStatus = () => {
-    return axios.get(`${BASE_URL}/auth/login_status`, { withCredentials: true }).then(handleResponse).catch(handleError);
+    return axios.get(`${BASE_URL}/auth/login-status`, { withCredentials: true }).then(handleResponse).catch(handleError);
 };
 
 export const apiAuth = {

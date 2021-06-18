@@ -376,7 +376,7 @@ const Dashboard = () => {
     const context = useContext(SessionContext);
     const [items, setItems] = useState([]);
     const getItems = () => {
-        apiMain.getAll()
+        apiMain.getCollection()
             .then(res => {
                 setItems(res);
             })
