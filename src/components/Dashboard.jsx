@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useHistory } from 'react-router';
 import { apiMain } from './../services/api/utilities/main';
 import { SessionContext } from '../context/SessionContext';
+import PageLoadSpinner from './PageLoadSpinner';
 
 const generateErrorMessage = (error) => {
     if (error.response.status === 401) {
@@ -375,7 +376,9 @@ const Dashboard = () => {
     const history = useHistory();
     const context = useContext(SessionContext);
     const [items, setItems] = useState([]);
+    const [loading, setLoading] = useState(false);
     const getItems = () => {
+        setLoading(true)
         apiMain.getCollection()
             .then(res => {
                 setItems(res);
@@ -389,6 +392,9 @@ const Dashboard = () => {
                     })
                 }
             })
+            .finally(() => {
+                setLoading(false);
+            })
     }
 
     useEffect(() => {
@@ -396,22 +402,25 @@ const Dashboard = () => {
     }, [])
 
     return (
-        <div className="container is-fluid mt-5">
-            <div className="columns is-multiline">
-                {
-                    items.map((data) => {
-                        return (
-                            <div className="column is-4">
-                                <Card accountName={data.accountName} username={data.username} password={data.password} id={data.id} getItems={getItems}></Card>
-                            </div>
-                        )
-                    })
-                }
-                <div className="column is-4">
-                    <AddCard getItems={getItems}></AddCard>
+        loading ?
+            <PageLoadSpinner />
+            :
+            <div className="container is-fluid mt-5">
+                <div className="columns is-multiline">
+                    {
+                        items.map((data) => {
+                            return (
+                                <div className="column is-4">
+                                    <Card accountName={data.accountName} username={data.username} password={data.password} id={data.id} getItems={getItems}></Card>
+                                </div>
+                            )
+                        })
+                    }
+                    <div className="column is-4">
+                        <AddCard getItems={getItems}></AddCard>
+                    </div>
                 </div>
-            </div>
-        </div >
+            </div >
     );
 };
 
