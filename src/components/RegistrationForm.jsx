@@ -23,7 +23,6 @@ const RegistrationForm = () => {
     const formSubmit = (formData) => {
         setLoading(true);
         setErrorMessage(null);
-        console.log("Post request fired")
         let unwrap = (({ name, email, password }) => ({ name, email, password }))
         apiAuth.register(unwrap(formData))
             .then(res => {
@@ -35,7 +34,7 @@ const RegistrationForm = () => {
             })
             .catch(err => {
                 if (err.response)
-                    setErrorMessage(err.response.data);
+                    setErrorMessage(err.response.data.Error);
                 history.replace({ pathname: "/auth", props: { isLoginPage: false, message: "Error occured during registration", type: "danger" }, })
             })
             .finally(() => {

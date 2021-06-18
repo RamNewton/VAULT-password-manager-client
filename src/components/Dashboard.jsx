@@ -102,7 +102,7 @@ const AddModal = (props) => {
     });
 
     const formSubmit = (formData) => {
-        console.log("Post request fired")
+        // console.log("Post request fired")
         setLoading(true);
         apiMain.createResource(formData)
             .then(res => {
@@ -212,7 +212,7 @@ const UpdateModal = (props) => {
 
     const formSubmit = (formData) => {
         setLoading(true);
-        console.log("Post request fired")
+        // console.log("Post request fired")
         apiMain.updateResource(id, formData)
             .then(res => {
                 getItems();

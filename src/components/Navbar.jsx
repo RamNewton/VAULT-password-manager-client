@@ -15,10 +15,8 @@ const Navbar = () => {
     const toggleHamburger = () => { setHamburgerOpen((prevState) => { return !prevState }) }
 
     const logout = () => {
-        console.log("Logout request fired");
         apiAuth.logout()
             .then(res => {
-                console.log(res);
                 session.setLoggedIn(false)
                 history.replace({ pathname: "/auth", props: { isLoginPage: true } })
             })

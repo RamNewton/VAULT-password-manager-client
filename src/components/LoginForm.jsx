@@ -33,7 +33,6 @@ const LoginForm = (props) => {
     const formSubmit = (formData) => {
         setLoading(true);
         setErrorMessage(null);
-        console.log("Post request fired")
         apiAuth.login(formData)
             .then(res => {
                 context.setLoggedIn(true);
@@ -41,7 +40,7 @@ const LoginForm = (props) => {
             })
             .catch(err => {
                 if (err.response)
-                    setErrorMessage(err.response.data);
+                    setErrorMessage(err.response.data.Error);
                 setLoading(false);
             })
             .finally(() =>

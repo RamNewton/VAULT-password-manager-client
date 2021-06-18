@@ -26,7 +26,7 @@ const App = () => {
                 session.setLoggedIn(false);
         }
         catch {
-            console.log("Error in checking Login Status")
+            // console.log("Error in checking Login Status")
         }
         finally {
             setAppLoading(false);
